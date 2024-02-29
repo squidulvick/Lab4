@@ -1,10 +1,11 @@
 """!
-@file basic_tasks.py
-    This file contains a demonstration program that runs some tasks, an
-    inter-task shared variable, and a queue. The tasks don't really @b do
-    anything; the example just shows how these elements are created and run.
+@file main.py
+    This file modifies the basic_tasks.py file created by Dr. Ridgley and implements a co-tasking
+    system to control the position of two motors at the same time.
 
 @author JR Ridgely
+@author Sydney Ulvick
+@author Jared Sinasohn
 @date   2021-Dec-15 JRR Created from the remains of previous example
 @copyright (c) 2015-2021 by JR Ridgely and released under the GNU
     Public License, Version 2. 
@@ -17,9 +18,12 @@ import task_share
 from Lab4.encoder_reader import Encoder
 from Lab4.motor_driver import MotorDriver
 from Lab4.controller import CLController
-from Lab4.step_response import step_response
 
 def motor_fun_1():
+    """!
+    This function controls the first motor as part of the first task
+    It runs the motor from 0 degrees to 180 degrees using a proportional controller
+    """
     # motor setup
     en_pin =  pyb.Pin(pyb.Pin.board.PA10, mode = pyb.Pin.OPEN_DRAIN, pull = pyb.Pin.PULL_UP, value=1)
     in1pin = pyb.Pin(pyb.Pin.board.PB4, pyb.Pin.OUT_PP)
@@ -52,6 +56,10 @@ def motor_fun_1():
 
 
 def motor_fun_2():
+    """!
+    This function controls the second motor as part of the first task
+    It runs the motor from 0 degrees to 180 degrees using a proportional controller
+    """
     # motor setup
     en_pin =  pyb.Pin(pyb.Pin.board.PC1, mode = pyb.Pin.OPEN_DRAIN, pull = pyb.Pin.PULL_UP, value=1)
     in1pin = pyb.Pin(pyb.Pin.board.PA0, pyb.Pin.OUT_PP)
@@ -83,6 +91,11 @@ def motor_fun_2():
         yield 0
 
 def serial_communication():
+    """!
+    This function controls the serial communication between the microcontroller
+    and the computer to plot responses if necessary.  It prints the list of values
+    one value at a time.
+    """
     while True:
         if not time1.full() or not pos1.full():
             yield 0

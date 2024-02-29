@@ -28,7 +28,14 @@ class CLController:
         @param kp - proportional controller constant
         @param ki - integral controller constant
         @param kd - derivative controller constant
-        @param reference - the target postition for the controller to aim for
+        @param setpoint - the target postition for the controller to aim for
+        @param eff - the effort the controller aims to send to the plant in percentage
+        @param curr - the current position/value of the plant
+        @param err_acc - the accumulation of the error used for integral control
+        @param prev_error - a list of previous errors used to calculate derivative control
+        @param self.deriv_amount - the amount of time for each update of the controller (roughly)
+        @param self.initial_time - the initial time for when the controller starts
+        @param self.curr_time - the current time of control
         """
         self.kp = kp
         self.ki = ki
@@ -53,6 +60,8 @@ class CLController:
         This method calculates the the effort to apply to an actuator based
         measured sensor value and a desired setpoint.  This method implements a
         PID Controller approach
+        @param measured - the measured value from the sensor
+        @returns self.eff - the effort the motor should push at in terms of percentage
         """
         self.curr = measured
         self.curr_time = utime.ticks_diff(utime.ticks_ms(),self.initial_time)
@@ -68,23 +77,51 @@ class CLController:
         return self.eff
 
     def set_setpoint(self, setpoint):
+        """!
+        This method sets the setpoint based on the function input
+        @param setpoint - the setpoint to set the controller to
+        """
         self.setpoint = setpoint
         
     def set_kp(self, kp):
+        """!
+        This method sets the kp based on the function input
+        @param kp - the proportional gain for the proportional part of the PID controller
+        """
         self.kp = kp
     
     def set_ki(self, ki):
+        """!
+        This method sets the ki based on the function input
+        @param ki - the integral gain for the integral part of the PID controller
+        """
         self.ki = self.ki
-        
+
+    def set_kd(self, kd):
+        """!
+        This method sets the ki based on the function input
+        @param kd - the derivative gain for the derivative part of the PID controller
+        """
+        self.kd = self.kd
+
     def get_pos(self):
+        """!
+        This method returns the current position/value of the plant the controller is controlling
+        @returns self.curr - the current position/value of the plant
+        """
         return self.curr
     
     def get_curr_time(self):
+        """!
+        This method returns the current time of operation of the controller
+        @returns self.time - the current time of operation of the controller
+        """
         return self.curr_time
     
     def reset_controller(self):
-        self.t_list = []
-        self.pos_list = []
+        """!
+        This method resets the controller to run again
+        """
         self.err = 0
         self.eff = 0
         self.err_acc = 0

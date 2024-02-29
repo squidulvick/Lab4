@@ -23,6 +23,11 @@ class Encoder:
         @param pin1 - the pin that encoder channel A will send data to
         @param pin2 - the pin that encoder channel B will send data to
         @param timer - the timer the encoder will use for counting its ticks
+        @param ch1 - the PWM timing channel used by the first input pin
+        @param ch2 - the PWM timing channel used by the second input pin
+        @param pos - the position of the encoder
+        @param prev - the previous reading of the encoder
+        @param new - the new value of the encoder that has just been read
         """
         # initialize passed through variables to self variables
         self.pin1 = pin1
@@ -50,6 +55,7 @@ class Encoder:
         """!
         This method reads the encoder value and returns the new encoder position
         It accounts for overflows and adjusts accordingly.
+        @returns self.pos - the position of the encoder
         """
         
         # the AR is the max value of the encoder.  This is equal to the period
